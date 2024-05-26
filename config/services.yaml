@@ -28,9 +28,7 @@ services:
         arguments:
             $rabbitDsn: '%env(MESSENGER_TRANSPORT_DSN)%'
 
-    App\Domain\Service\BonusTypeStrategy\PercentageBonusTypeStrategy:
-        public: true
-    App\Domain\Service\BonusTypeStrategy\FixedBonusTypeStrategy:
-        public: true
-        arguments:
-            $config: '@App\Domain\Config\FixedBonusTypeConfig'
+    # Listener
+    App\EventStorming\Listener\AddTaskHeaderListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.response }

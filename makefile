@@ -25,9 +25,6 @@ sleep:
 seed:
 	docker exec -it app bin/console doctrine:database:create
 	docker exec -it app bin/console doctrine:migrations:migrate --no-interaction
-	docker exec -it app bin/console support:fixture:salary
-	docker exec -it app bin/console support:fixture:department
-	docker exec -it app bin/console support:fixture:employee
 	docker exec -it app bin/console doctrine:database:create --env=test --no-interaction
 	docker exec -it app bin/console doctrine:migrations:migrate --env=test --no-interaction
 

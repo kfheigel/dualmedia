@@ -8,6 +8,10 @@ services:
       dockerfile: Dockerfile
     volumes:
       - .:/app
+    environment:
+      DATABASE_URL: mysql://app:root@db/mysql-db
+    depends_on:
+      - db
 
   web:
     image: nginx:latest
@@ -21,17 +25,18 @@ services:
       - app
     
   db:
-    image: postgres:latest
-    container_name: postgresql-db
+    image: mysql:latest
+    container_name: mysql-db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: app
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: postgresql-db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mysql-db
+      MYSQL_USER: app
+      MYSQL_PASSWORD: root
     ports:
-      - "5432:5432"
+      - "3306:3306"
     volumes:
-      - .:/app
+      - db_data:/var/lib/mysql
 
   amqp:
     image: rabbitmq:3-management
@@ -45,3 +50,6 @@ services:
     volumes:
         - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
         - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+
+volumes:
+  db_data:

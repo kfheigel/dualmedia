@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
     autoconf \
     gcc \
     make\
-    && docker-php-ext-install pdo pdo_pgsql intl opcache
+    && docker-php-ext-install pdo pdo_mysql intl opcache
 
 RUN pecl install amqp \
     && docker-php-ext-enable amqp
@@ -28,9 +28,9 @@ RUN git clone https://github.com/xdebug/xdebug.git \
     && phpize \
     && ./configure \
     && make \
-    && make install
-
+    && make install 
+    
 COPY docker/php/php-xdebug.ini /usr/local/etc/php/php.ini
-COPY docker/nginx/conf.d/default.conf etc/nginx/conf.d
+COPY docker/nginx/conf.d/default.conf /etc/nginx/conf.d
 
 WORKDIR /app

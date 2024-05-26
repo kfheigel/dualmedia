@@ -1,0 +1,36 @@
+parameters:
+
+services:
+    _defaults:
+        autowire: true 
+        autoconfigure: true
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Domain/Entity/'
+            - '../src/Kernel.php'
+
+    # Messenger Bus
+    _instanceof:
+        App\Domain\Messenger\CommandHandlerInterface:
+            tags:
+                - { name: messenger.message_handler, bus: command.bus }
+        App\Domain\Messenger\EventListenerInterface:
+            tags:
+                - { name: messenger.message_handler, bus: event.bus }
+        App\Domain\Messenger\QueryFinderInterface:
+            tags:
+                - { name: messenger.message_handler, bus: query.bus }
+
+    # Controller
+    App\UI\Controller\HealthcheckController:
+        arguments:
+            $rabbitDsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+
+    App\Domain\Service\BonusTypeStrategy\PercentageBonusTypeStrategy:
+        public: true
+    App\Domain\Service\BonusTypeStrategy\FixedBonusTypeStrategy:
+        public: true
+        arguments:
+            $config: '@App\Domain\Config\FixedBonusTypeConfig'

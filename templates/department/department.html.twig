@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add Department{% endblock %}
+
+{% block body %}
+    <div class="example-wrapper">
+        {% include 'messages/flashMessages.html.twig' %}
+        <h1>Add new department</h1>
+        {{ form_start(form) }}
+            {{ form_widget(form) }}
+
+        <input class="button" style="margin:10px 0; background-color: #04AA6D;" type="submit">
+        {{ form_end(form) }}
+        <a href="/payroll"><button style="background-color: #3300cc;" class="button">Go To Payroll</button></a>
+        <a href="/employee"><button style="background-color: #04AA6D;" class="button">Add Employee</button></a>
+    </div>
+{% endblock %}
+
+
+
+
+

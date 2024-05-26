@@ -1,0 +1,12 @@
+[
+  {
+    "id": "5b04faba-dc71-4439-a18c-0c6f0b23db95",
+    "baseSalary": 1000,
+    "bonusSalary": null
+  },
+  {
+    "id": "288c8915-0c6d-43ad-a7a7-0e82ce7901de",
+    "baseSalary": 1100,
+    "bonusSalary": null
+  }
+]

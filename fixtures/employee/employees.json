@@ -1,0 +1,18 @@
+[
+  {
+    "id": "1f5a598e-d3aa-4b8a-aa0c-58ac5d72a359",
+    "name": "Adam",
+    "surname": "Kowalski",
+    "departmentId": "7061eee1-845a-4bab-b053-67e5f15992e8",
+    "salaryId": "5b04faba-dc71-4439-a18c-0c6f0b23db95",
+    "employmentDate":"2009-01-01"
+  },
+  {
+    "id": "a3fd7e30-e7ad-416d-899a-8bb563e8fd56",
+    "name": "Ania",
+    "surname": "Nowak",
+    "departmentId": "b117af94-6ed5-43ca-9781-313c1e8b246c",
+    "salaryId": "288c8915-0c6d-43ad-a7a7-0e82ce7901de",
+    "employmentDate": "2019-01-01"
+  }
+]

@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Payroll{% endblock %}
+
+{% block body %}
+        <style>
+                .example-wrapper { margin: 1em auto; max-width: 1100px; width: 95%; font: 18px/1.5 sans-serif; }
+                .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+        </style>
+        <div class="example-wrapper">
+                <table id="example" class="display" style="width:100%">
+                        <thead>
+                        <tr>
+                                <th>Name</th>
+                                <th>Surname</th>
+                                <th>Department</th>
+                                <th>Remuneration base (amount)</th>
+                                <th>Addition to the base (amount)</th>
+                                <th>Bonus type</th>
+                                <th>Salary with bonus</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                                {% for employee in employees %}
+                                <tr>
+                                        <td>{{ employee.name }}</td>
+                                        <td>{{ employee.surname }}</td>
+                                        <td>{{ employee.departmentName }}</td>
+                                        <td>{{ employee.baseSalary }}</td>
+                                        <td>{{ employee.bonusSalary }}</td>
+                                        <td>{{ employee.bonusType.value }}</td>
+                                        <td>{{ employee.baseSalary + employee.bonusSalary }}</td>
+                                </tr>
+                                {% endfor %}
+                        </tbody>
+                </table>
+                <a href="/employee"><button style="background-color: #04AA6D;" class="button">Add Employee</button></a>
+                <a href="/department"><button style="background-color: #3300cc;" class="button">Add Department</button></a>
+
+        </div>
+        <script>
+                $(document).ready(function() {
+                        $('#example').DataTable();
+                } );
+        </script>
+{% endblock %}
+
+
+
+
+

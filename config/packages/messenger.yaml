@@ -1,0 +1,35 @@
+framework:
+    messenger:
+        # failure_transport: failed
+        default_bus: command.bus
+        transports:
+            async:
+                dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
+                retry_strategy:
+                    max_retries: 3
+                    delay: 1000
+                    multiplier: 2
+                    max_delay: 0
+            sync: 'sync://'
+
+        buses:
+            command.bus:
+                middleware:
+                    - validation
+                    - App\Infrastructure\MessageBus\Middleware\FlushMiddleware
+                    - App\Infrastructure\MessageBus\Middleware\LoggerMiddleware
+            event.bus:
+                default_middleware:  
+                    enabled: true
+                    allow_no_handlers: true
+                middleware:
+                    - validation
+                    - App\Infrastructure\MessageBus\Middleware\FlushMiddleware
+                    - App\Infrastructure\MessageBus\Middleware\LoggerMiddleware
+            query.bus:
+                middleware:
+                    - App\Infrastructure\MessageBus\Middleware\LoggerMiddleware
+
+        routing:
+            'App\Domain\Command\AsyncCommandInterface': async
+            'App\Domain\Command\SyncCommandInterface': sync

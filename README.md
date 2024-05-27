@@ -32,6 +32,8 @@ This command performs all tests withing project, and also runs static code analy
 | Name        | Endpoint                      | Method |
 |------------|-------------------------------|------|
 | Healthcheck| `localhost:8081/healthcheck`  | GET          	 |
+| Order| `localhost:8081/order`  | POST          	 |
+| Order| `localhost:8081/order/{id}`  | GET          	 |
 
 ## Authors
 

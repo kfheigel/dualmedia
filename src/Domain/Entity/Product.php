@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace App\Domain\Entity;
 
-use App\Infrastructure\Repository\ProductRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Types\UuidType;
-use Symfony\Component\Uid\Uuid;
+use App\Infrastructure\Repository\ProductRepository;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
 {
     #[ORM\Id]
-    #[ORM\Column(type: UuidType::NAME, unique: true)]
-    private Uuid $id;
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER, unique: true)]
+    private int $id;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
     private string $name;
@@ -23,22 +22,20 @@ class Product
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description;
 
-    #[ORM\Column(type: Types::DECIMAL, precision:10, scale: 2)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private float $price;
 
     public function __construct(
-        int $name,
+        string $name,
         float $price,
-        ?string $description,
-        ?Uuid $id = null
+        ?string $description = null,
     ) {
         $this->name = $name;
         $this->price = $price;
-        $this->description = $description ?? null;
-        $this->id = $id ?? Uuid::v4();
+        $this->description = $description;
     }
 
-    public function getId(): Uuid
+    public function getId(): int
     {
         return $this->id;
     }

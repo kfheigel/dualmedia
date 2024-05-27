@@ -9,7 +9,6 @@ use App\Domain\Entity\OrderItem;
 use App\Domain\Repository\NonExistentEntityException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Uid\Uuid;
 
 final class OrderItemRepository extends ServiceEntityRepository implements OrderItemRepositoryInterface
 {
@@ -23,20 +22,24 @@ final class OrderItemRepository extends ServiceEntityRepository implements Order
         $this->getEntityManager()->persist($orderItem);
     }
 
-    public function get(Uuid $uuid): OrderItem
+    public function get(int $id): OrderItem
     {
-        $orderItem = $this->findOne($uuid);
+        $order = $this->findOne($id);
 
-        if (!$orderItem) {
-            throw new NonExistentEntityException(OrderItem::class, $uuid->toRfc4122());
+        if (!$order) {
+            throw new NonExistentEntityException(OrderItem::class, (string)$id);
         }
 
-        return $orderItem;
+        return $order;
     }
 
-    public function findOne(Uuid $uuid): ?OrderItem
+    public function findOne(int $id): ?OrderItem
     {
-        return $this->find($uuid);
+        return $this->createQueryBuilder('oi')
+            ->where('oi.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     public function findAll(): array

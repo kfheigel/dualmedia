@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Product;
+use Doctrine\Persistence\ManagerRegistry;
 use App\Domain\Repository\NonExistentEntityException;
 use App\Domain\Repository\ProductRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Uid\Uuid;
 
 final class ProductRepository extends ServiceEntityRepository implements ProductRepositoryInterface
 {
@@ -23,24 +22,24 @@ final class ProductRepository extends ServiceEntityRepository implements Product
         $this->getEntityManager()->persist($product);
     }
 
-    public function get(Uuid $uuid): Product
+    public function get(int $id): Product
     {
-        $product = $this->findOne($uuid);
+        $order = $this->findOne($id);
 
-        if (!$product) {
-            throw new NonExistentEntityException(Product::class, $uuid->toRfc4122());
+        if (!$order) {
+            throw new NonExistentEntityException(Product::class, (string)$id);
         }
 
-        return $product;
+        return $order;
     }
 
-    public function findOne(Uuid $uuid): ?Product
+    public function findOne(int $id): ?Product
     {
         return $this->createQueryBuilder('p')
-        ->where('p.id = :uuid')
-        ->setParameter('uuid', $uuid->toRfc4122())
-        ->getQuery()
-        ->getOneOrNullResult();
+            ->where('p.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     public function findAll(): array

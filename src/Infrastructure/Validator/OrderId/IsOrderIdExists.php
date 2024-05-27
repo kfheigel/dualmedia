@@ -8,7 +8,7 @@ use Attribute;
 use Symfony\Component\Validator\Constraint;
 
 #[Attribute]
-final class IsOrderUuidExists extends Constraint
+final class IsOrderIdExists extends Constraint
 {
     public string $violationCode;
 
@@ -19,5 +19,5 @@ final class IsOrderUuidExists extends Constraint
         $this->violationCode = (string) $code;
     }
 
-    public string $message = 'Order with Uuid: "{{ string }}" does not exist';
+    public string $message = 'Order with id: "{{ string }}" does not exist';
 }

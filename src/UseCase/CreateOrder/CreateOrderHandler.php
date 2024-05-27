@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\UseCase\CreateOrder;
 
 use App\Domain\Entity\Orders;
-use Symfony\Component\Uid\Uuid;
 use App\Domain\Entity\OrderItem;
+use Doctrine\ORM\EntityManagerInterface;
 use App\EventStorming\Event\OrderCreatedEvent;
 use App\Domain\Messenger\CommandHandlerInterface;
 use App\Domain\Repository\OrderRepositoryInterface;
@@ -20,21 +20,26 @@ final class CreateOrderHandler implements CommandHandlerInterface
     public function __construct(
         private ProductRepositoryInterface $productRepository,
         private OrderRepositoryInterface $orderRepository,
-        private MessageBusInterface $eventBus
+        private MessageBusInterface $eventBus,
+        private EntityManagerInterface $em
     ) {
     }
 
-    public function __invoke(CreateOrderCommand $command): Uuid
+    public function __invoke(CreateOrderCommand $command): int
     {
         $orderItems = $command->orderItems;
         $products = $this->prepareProducts($orderItems);
 
         $orders = new Orders($command->customerName, $command->customerEmail);
+        $this->em->persist($orders);
+
         foreach ($products as $product) {
-            $orderItem = new OrderItem($orders, $product['product'], $product['quantity'], 2);
+            $orderItem = new OrderItem($orders, $product['product'], $product['quantity'], $product['product']->getPrice());
+            $orderItem->setOrders($orders);
+            $this->em->persist($orderItem);
+            $this->em->flush();
             $orders->addOrderItem($orderItem);
         }
-        $this->orderRepository->save($orders);
 
         $event = new OrderCreatedEvent(
             $orders->getId(),
@@ -50,11 +55,12 @@ final class CreateOrderHandler implements CommandHandlerInterface
     private function prepareProducts(array $orderItems): array 
     {
         return array_map(function($item) {
-            $product = $this->productRepository->findOne(Uuid::fromString($item['id']));
+            $product = $this->productRepository->findOne((int)$item['id']);
             return [
                 'product' => $product,
                 'quantity' => $item['quantity']
             ];
         }, $orderItems);
     }
+    
 }

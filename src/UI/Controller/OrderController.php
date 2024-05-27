@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\UI\Controller;
 
-use Symfony\Component\Uid\Uuid;
 use App\ReadModel\Order\OrderQuery;
 use App\Domain\Messenger\MessageBus\QueryBus;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,13 +13,15 @@ use App\UI\Controller\Traits\OrderControllerTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 
 final class OrderController extends AbstractController
 {
     use OrderControllerTrait;
 
     public function __construct(
-        private readonly MessageBusInterface $commandBus
+        private readonly MessageBusInterface $commandBus,
+        private SerializerInterface $serializer
     ) {
     }
     
@@ -33,16 +34,21 @@ final class OrderController extends AbstractController
             return new JsonResponse('', Response::HTTP_BAD_REQUEST);
         }
 
-        return new JsonResponse($response->toRfc4122(), Response::HTTP_OK);
+        return new JsonResponse($response, Response::HTTP_OK);
     }
 
     #[Route('/order/{id}', name: 'get_order', methods: ['GET'])]
     public function getOrder(QueryBus $queryBus, string $id): JsonResponse
     {
-        $uuid = Uuid::fromString($id);
-        $query = new OrderQuery($uuid);
-        $data = $queryBus->find($query);
+        $query = new OrderQuery((int)$id);
+        $order = $queryBus->find($query);
+        $jsonData = [
+            'id' => $order->getId(),
+            'orderDate' => $order->getOrderDate()->format('Y-m-d H:i:s'),
+            'customerName' => $order->getCustomerName(),
+            'customerEmail' => $order->getCustomerEmail(),
+        ];
 
-        return $this->json($data);
+        return new JsonResponse($jsonData, Response::HTTP_OK);
     }
 }

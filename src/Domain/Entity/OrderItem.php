@@ -4,57 +4,55 @@ declare(strict_types=1);
 
 namespace App\Domain\Entity;
 
-use Symfony\Component\Uid\Uuid;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Types\UuidType;
 use App\Infrastructure\Repository\OrderItemRepository;
 
 #[ORM\Entity(repositoryClass: OrderItemRepository::class)]
 class OrderItem
 {
     #[ORM\Id]
-    #[ORM\Column(type: UuidType::NAME, unique: true)]
-    private Uuid $id;
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER, unique: true)]
+    private int $id;
 
     #[ORM\ManyToOne(targetEntity: Orders::class, inversedBy: 'orderItems')]
     #[ORM\JoinColumn(nullable: false)]
-    private $order;
+    private Orders $order;
 
     #[ORM\ManyToOne(targetEntity: Product::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $product;
+    private Product $product;
 
     #[ORM\Column(type: 'integer')]
-    private $quantity;
+    private int $quantity;
 
     #[ORM\Column(type: 'decimal', scale: 2)]
-    private $unitPrice;
+    private float $unitPrice;
 
     public function __construct(
         Orders $order, 
         Product $product, 
         int $quantity, 
         float $unitPrice,
-        ?Uuid $id = null
     ) {
         $this->order = $order;
         $this->product = $product;
         $this->quantity = $quantity;
         $this->unitPrice = $unitPrice;
-        $this->id = $id ?? Uuid::v4();
     }
 
-    public function getId(): Uuid
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getOrder(): ?Orders
+    public function getOrders(): ?Orders
     {
         return $this->order;
     }
 
-    public function setOrder(?Orders $order): self
+    public function setOrders(?Orders $order): self
     {
         $this->order = $order;
 

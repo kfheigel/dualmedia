@@ -2,14 +2,13 @@
 
 namespace App\UI\Controller\Traits;
 
-use Symfony\Component\Uid\Uuid;
 use App\UseCase\CreateOrder\CreateOrderCommand;
 use Symfony\Component\Messenger\Stamp\HandledStamp;
 use Symfony\Component\Messenger\Exception\ValidationFailedException;
 
 trait OrderControllerTrait
 {
-    private function createOrderFromDecodedJson(array $parameters): ?Uuid
+    private function createOrderFromDecodedJson(array $parameters): ?int
     {
         $customerName = $parameters['customerName'];
         $customerEmail = $parameters['customerEmail'];
